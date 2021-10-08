@@ -1,7 +1,9 @@
 import moment from 'moment';
-import { StartDay } from '../models/calender';
+import { IHourProps, StartDay } from '../models/calender';
 
-export const getDateRangesWithThisWeek = (startDay: StartDay): string[] => {
+export const getDateRangesWithThisWeek = (
+  startDay: StartDay = StartDay.Sunday,
+): string[] => {
   let start = moment().subtract(0, 'weeks').startOf('isoWeek');
   let end = moment().subtract(0, 'weeks').endOf('isoWeek');
 
@@ -65,7 +67,7 @@ export const afternoon = (hours: number, isLower: boolean = false) => {
 export const getHoursRanges = (
   format24H: boolean = true,
   isLower: boolean = false,
-) => {
+): IHourProps[] => {
   if (format24H) {
     return hoursRanges.map((item) => {
       return {
@@ -91,4 +93,20 @@ export const setHourFormat12H = (hour: number) => {
     return hour - 12;
   }
   return hour;
+};
+
+export const getHourFormat24h = (time: IHourProps) => {
+  if (time.textHour) {
+    if (time.textHour.toLowerCase() === 'am' && time.hour === 12) {
+      return 0;
+    }
+    if (time.textHour.toLowerCase() === 'pm' && time.hour === 12) {
+      return 12;
+    }
+    if (time.textHour.toLowerCase() === 'pm') {
+      return time.hour + 12;
+    }
+  }
+
+  return time.hour;
 };

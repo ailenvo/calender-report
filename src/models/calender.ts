@@ -10,8 +10,7 @@ export enum CalenderType {
 }
 
 export interface IDayProps {
-  id: string;
-  className: string;
+  className?: string;
   datetime: string | Date | null | undefined;
 }
 
@@ -27,4 +26,9 @@ export interface IGetDayRange {
   startDay?: StartDay;
   startDate?: string | Date | null;
   endDate?: string | Date | null;
+}
+
+export interface IHourProps {
+  hour: number;
+  textHour: string | null;
 }

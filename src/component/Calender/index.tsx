@@ -3,45 +3,108 @@ import {
   ICalenderProps,
   IDayProps,
   IGetDayRange,
+  IHourProps,
   IWeekProps,
   StartDay,
 } from '../../models/calender';
-import className from 'classnames';
+import {
+  getDateRangesWithRange,
+  getDateRangesWithThisMonth,
+  getDateRangesWithThisWeek,
+  getHourFormat24h,
+  getHoursRanges,
+} from '../../helpers';
+import classNames from 'classnames';
 import moment from 'moment';
-import { getDateRangesWithRange, getHoursRanges } from '../../helpers';
 
 const CalenderReport = (props: ICalenderProps) => {
   const { id, type } = props;
-
-  const da = getHoursRanges(false, true);
-
-  console.log(da);
+  const hours = getHoursRanges(false);
+  const dates = getDateRangesWithThisWeek();
 
   const renderDay = (data: IDayProps) => {
-    return <div className="calender__col"></div>;
+    const date = moment(data.datetime);
+
+    const dd = date.format('D');
+    const day = date.format('ddd');
+
+    return (
+      <div key={dd} className={classNames('calender__col', data.className)}>
+        <div>{day}</div>
+        <div>{dd}</div>
+      </div>
+    );
+  };
+  const renderTime = (
+    hour: IHourProps,
+    showTime: boolean = true,
+    className?: string,
+  ) => {
+    return (
+      <div key={hour.hour} className={classNames('calender__col', className)}>
+        <span className="calender__hour">
+          {(showTime ? hour.hour : '') +
+            ' ' +
+            (showTime ? (hour.textHour ? hour.textHour : '') : '')}
+        </span>
+      </div>
+    );
   };
 
-  const renderNullCol = () => {
-    return <div className="calender__col"></div>;
+  const renderNullCol = (
+    date?: string,
+    time?: IHourProps,
+    className?: string,
+  ) => {
+    if (date && time) {
+      const hour = getHourFormat24h(time);
+
+      const day = moment(date).set('hour', hour).format('YYYY/MM/DD hh:mm a');
+
+      return (
+        <div
+          className={classNames('calender__col', className)}
+          onClick={() => alert(day)}></div>
+      );
+    }
+
+    return <div className={classNames('calender__col', className)}></div>;
   };
 
   const renderHeader = () => {
-    return <div className="calender__row">{renderNullCol()}</div>;
+    return (
+      <div className="calender__row">
+        {renderNullCol()}
+        {dates.map((item) =>
+          renderDay({
+            datetime: item,
+          }),
+        )}
+      </div>
+    );
   };
 
-  const renderCalenderWithWeek = (data: IWeekProps) => {
+  const renderHours = () => {
+    return hours.map((hour, i) => (
+      <div key={i} className="calender__row">
+        {renderTime(hour, i > 0)}
+        {dates.map((date) => renderNullCol(date, hour, 'border'))}
+      </div>
+    ));
+  };
+
+  const renderCalender = (data: IWeekProps) => {
     return (
       <div className="main">
         {renderHeader()}
-
-        <div className="calender__row">{renderNullCol()}</div>
+        {renderHours()}
       </div>
     );
   };
 
   return (
     <section id={id} className="calender">
-      {renderCalenderWithWeek({})}
+      {renderCalender({})}
     </section>
   );
 };

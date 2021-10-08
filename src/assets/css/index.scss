@@ -1,21 +1,35 @@
 .calender {
-  max-width: 800px;
-  max-height: 500px;
-  border: 1px solid #000;
+  max-width: 900px;
   margin: 0 auto;
   overflow: auto;
 
   .calender__row {
-    background-color: rgba(255, 0, 0, 0.1);
+    background-color: #fff;
     display: flex;
     flex-wrap: wrap;
 
     .calender__col {
       flex: 1 0 0%;
-      min-height: 20px;
+      min-height: 50px;
+      text-align: center;
+
+      .calender__hour {
+        position: relative;
+        top: -10px;
+        right: -28px;
+      }
     }
   }
 
   .main {
+  }
+
+  .border {
+    border-left: 1px solid #000;
+    border-top: 1px solid #000;
+
+    &:last-child() {
+      border-right: 1px solid #000;
+    }
   }
 }
